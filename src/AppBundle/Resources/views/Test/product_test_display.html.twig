@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test display picture</title>
+</head>
+<body>
+
+{% for picture in products %}
+ <img src="{{ vich_uploader_asset(picture, 'pictureFile') }}" alt="{{ picture.name }}" />
+{% endfor %}
+</body>
+</html>
