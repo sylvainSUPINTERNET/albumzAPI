@@ -65,11 +65,11 @@ class Picture
      * Set name
      *
      * @param string $name
-     *
      * @return Picture
      */
     public function setName($name)
     {
+
         $this->name = $name;
 
         return $this;
@@ -93,7 +93,7 @@ class Picture
 
     public function setDatePublication()
     {
-        $this->datePublication = new DateTime();
+        $this->datePublication = new \DateTime('now');
 
         return $this;
     }
@@ -129,4 +129,32 @@ class Picture
     {
         return $this->pictureFile;
     }
+
+
+
+
+    /**
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $picture
+     *
+     * @return Picture
+     */
+    public function setPicture(File $picture = null)
+    {
+        $this->pictureFile = $picture;
+
+
+        return $this;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getPicture()
+    {
+        return $this->pictureFile;
+    }
+
+
+
+
 }

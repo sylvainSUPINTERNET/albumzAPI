@@ -74,6 +74,7 @@ class PictureController extends Controller
         //var_dump($request->files->get('picture_upload')); for file use files not request
         //var_dump($request->request->get('test')); if want other data
 
+        //TODO: AJOUTER ID de l'user qui poste les image
 
         $pictureFile = $request->files->get('picture_upload');
         $viewHandler = $this->get('fos_rest.view_handler');
