@@ -72,12 +72,16 @@ class UserController extends Controller
                 $em->persist($user);
                 $em->flush();
 
+                $idForToken = strval($user->getId());
+                $firstnameForToken = $user->getFirstname();
+                $token = $idForToken . $firstnameForToken;
+
                 $formatted = [];
                 $formatted[] = [
                     "error" => true,
                     "message" => "User register with success",
                     "code" => Response::HTTP_OK,
-                    "token" => $user->getPassword()
+                    "token" => $token
                 ];
                 // Création d'une vue FOSRestBundle
                 $view = View::create($formatted);
@@ -139,13 +143,16 @@ class UserController extends Controller
                 return $viewHandler->handle($view);
 
             } else {
+                $idForToken = strval($userExist->getId());
+                $firstnameForToken = $userExist->getFirstname();
+                $token = $idForToken . $firstnameForToken;
 
                 $formatted = [];
                 $formatted[] = [
                     "error" => true,
                     "message" => "User login with success, your token is " . $userExist->getPassword(),
                     "code" => Response::HTTP_OK,
-                    "token" => $userExist->getPassword()
+                    "token" => $token
                 ];
                 // Création d'une vue FOSRestBundle
                 $view = View::create($formatted);
