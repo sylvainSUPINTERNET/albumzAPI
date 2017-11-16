@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class User
 {
@@ -48,6 +49,16 @@ class User
      * @ORM\Column(name="password", type="string", length=255)
      */
     private $password;
+
+
+    //TODO: One idUploader to Many Picture
+    /**
+     * One User has Many Picture.
+     * @ORM\OneToMany(targetEntity="Picture", mappedBy="user")
+     */
+    private $pictures;
+
+
 
 
     /**
@@ -154,5 +165,47 @@ class User
     public function getPassword()
     {
         return $this->password;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->pictures = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add picture
+     *
+     * @param \AppBundle\Entity\Picture $picture
+     *
+     * @return User
+     */
+    public function addPicture(\AppBundle\Entity\Picture $picture)
+    {
+        $this->pictures[] = $picture;
+
+        return $this;
+    }
+
+    /**
+     * Remove picture
+     *
+     * @param \AppBundle\Entity\Picture $picture
+     */
+    public function removePicture(\AppBundle\Entity\Picture $picture)
+    {
+        $this->pictures->removeElement($picture);
+    }
+
+    /**
+     * Get pictures
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPictures()
+    {
+        return $this->pictures;
     }
 }

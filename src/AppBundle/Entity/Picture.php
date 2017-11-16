@@ -49,7 +49,12 @@ class Picture
     private $pictureFile;
 
 
-
+    /**
+     * Many Picture have One User.
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="pictures")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    private $user;
 
     /**
      * Get id
@@ -157,4 +162,28 @@ class Picture
 
 
 
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Picture
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 }

@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Picture;
+use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -74,9 +75,11 @@ class PictureController extends Controller
         //var_dump($request->files->get('picture_upload')); for file use files not request
         //var_dump($request->request->get('test')); if want other data
 
-        //TODO: AJOUTER ID de l'user qui poste les image
 
         $pictureFile = $request->files->get('picture_upload');
+        $user_token= $request->request->get('picture_user_token');
+
+
         $viewHandler = $this->get('fos_rest.view_handler');
 
 
@@ -95,12 +98,27 @@ class PictureController extends Controller
                     $salt = $this->generateRandomString();
                     $secureName = sha1($salt.$nameWithouExtension).$extension;
                     */
+                    $repository = $this->getDoctrine()->getRepository(User::class);
 
+                    $user = $repository->find($user_token);
+                    if(!$user){
+                        $formatted = [];
+                        $formatted[] = [
+                            "error" => true,
+                            "message" => "User for token sended dosnt exist ! Upload failed",
+                            "code" => Response::HTTP_BAD_REQUEST,
+                        ];
+                        // Création d'une vue FOSRestBundle
+                        $view = View::create($formatted);
+                        $view->setFormat('json');
+                        return $viewHandler->handle($view);
+                    }
 
                     // upload image when all is secured
                     $pictureUpload = new Picture();
                     $em = $this->getDoctrine()->getManager();
                     $pictureUpload->setPictureFile($pictureFile);
+                    $pictureUpload->setUser($user);
                     $em->persist($pictureUpload);
                     $em->flush();
 
@@ -108,7 +126,7 @@ class PictureController extends Controller
                     $formatted[] = [
                         "error" => false,
                         "message" => "Uploaded with success !",
-                        "code" => Response::HTTP_OK
+                        "code" => Response::HTTP_OK,
                     ];
                     // Création d'une vue FOSRestBundle
                     $view = View::create($formatted);
@@ -159,6 +177,74 @@ class PictureController extends Controller
     }
 
 
+
+
+    //GET pictures
+    /**
+     * @Post("/pictures/my/uploaded")
+     */
+    public function getMyUploadedPictures(Request $request)
+    {
+        $viewHandler = $this->get('fos_rest.view_handler');
+
+        $user_token= $request->request->get('pictures_uploaded_by_user_token'); //id
+        if($user_token){
+            $repository = $this->getDoctrine()->getRepository(User::class);
+            $user = $repository->find($user_token);
+            if($user){
+                $formatted = [];
+                if(!$user->getPictures()[0]){
+                    //error param
+                    $formatted = [];
+                    $formatted[] = [
+                        "error" => true,
+                        "message" => "Vous avez pas d'images uploaded ! ",
+                        "code" => Response::HTTP_NO_CONTENT
+                    ];
+                    // Création d'une vue FOSRestBundle
+                    $view = View::create($formatted);
+                    $view->setFormat('json');
+                    return $viewHandler->handle($view);
+                }
+                foreach ($user->getPictures() as $picture) {
+                    $formatted[] = [
+                        'id' => $picture->getId(),
+                        'name' => $picture->getName(),
+                        'date_publication' => $picture->getDatePublication(),
+                    ];
+                }
+                $view = View::create($formatted);
+                $view->setFormat('json');
+                return $viewHandler->handle($view);
+            }else{
+                //error param
+                $formatted = [];
+                $formatted[] = [
+                    "error" => true,
+                    "message" => "No user found for this token ! (please check if you clear your stringWithDigit as only digit",
+                    "code" => Response::HTTP_BAD_REQUEST
+                ];
+                // Création d'une vue FOSRestBundle
+                $view = View::create($formatted);
+                $view->setFormat('json');
+                return $viewHandler->handle($view);
+            }
+
+        }else{
+            //error param
+            $formatted = [];
+            $formatted[] = [
+                "error" => true,
+                "message" => "Empty id or Please post a validate ID (numeric only accepted, tirm your token string as only digit if is not done !)",
+                "code" => Response::HTTP_BAD_REQUEST
+            ];
+            // Création d'une vue FOSRestBundle
+            $view = View::create($formatted);
+            $view->setFormat('json');
+            return $viewHandler->handle($view);
+        }
+
+    }
 
 
     //utils
