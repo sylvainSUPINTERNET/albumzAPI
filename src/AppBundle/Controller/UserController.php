@@ -78,7 +78,7 @@ class UserController extends Controller
 
                 $formatted = [];
                 $formatted[] = [
-                    "error" => true,
+                    "error" => false,
                     "message" => "User register with success",
                     "code" => Response::HTTP_OK,
                     "token" => $token
@@ -149,7 +149,7 @@ class UserController extends Controller
 
                 $formatted = [];
                 $formatted[] = [
-                    "error" => true,
+                    "error" => false,
                     "message" => "User login with success, your token is " . $userExist->getPassword(),
                     "code" => Response::HTTP_OK,
                     "token" => $token
