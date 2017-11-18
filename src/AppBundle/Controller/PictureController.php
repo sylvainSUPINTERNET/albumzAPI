@@ -122,6 +122,11 @@ class PictureController extends Controller
                     $em->persist($pictureUpload);
                     $em->flush();
 
+
+                    //TODO: set PROPERLY PATH with getcwd or __DIR__ !!!!!!!!
+                    //copy file into public directory (to get the access for react-native on display image for user)
+                    copy('C:\wamp64\www\albumzAPI\web\upload\pictures\\' . $pictureUpload->getName(),'C:\wamp64\www\albumzAPI\public\upload\pictures\\' . $pictureUpload->getName());
+
                     $formatted = [];
                     $formatted[] = [
                         "error" => false,
@@ -179,7 +184,6 @@ class PictureController extends Controller
 
 
 
-    //GET pictures
     /**
      * @Post("/pictures/my/uploaded")
      */
@@ -245,6 +249,46 @@ class PictureController extends Controller
         }
 
     }
+
+
+
+    /**
+     * @Get("/pictures/{namePicture_extension}/display")
+     */
+    public function getPictureDisplay(Request $request)
+    {
+        $viewHandler = $this->get('fos_rest.view_handler');
+
+        $namePicture_extension = $request->get('namePicture_extension');
+
+        $repository = $this->getDoctrine()->getRepository(Picture::class);
+        $picture = $repository->findBy(array(
+            'name' => $namePicture_extension
+        ));
+
+        if(!$picture){
+            //error no pic found !
+            $formatted = [];
+            $formatted[] = [
+                "error" => true,
+                "message" => "Picture not found !",
+                "code" => Response::HTTP_NOT_FOUND
+            ];
+            // Création d'une vue FOSRestBundle
+            $view = View::create($formatted);
+            $view->setFormat('json');
+            return $viewHandler->handle($view);
+        }else{
+            return $this->render('AppBundle:Pictures:pictures_display.html.twig', array(
+                    'picture' => $picture[0],
+                )
+            );
+        }
+
+    }
+
+
+
 
 
     //utils
