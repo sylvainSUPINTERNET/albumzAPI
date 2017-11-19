@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\View\ViewHandler;
 use FOS\RestBundle\View\View; // Utilisation de la vue de FOSRestBundle
 
@@ -125,7 +126,7 @@ class PictureController extends Controller
 
                     //TODO: set PROPERLY PATH with getcwd or __DIR__ !!!!!!!!
                     //copy file into public directory (to get the access for react-native on display image for user)
-                    copy('C:\wamp64\www\albumzAPI\web\upload\pictures\\' . $pictureUpload->getName(),'C:\wamp64\www\albumzAPI\public\upload\pictures\\' . $pictureUpload->getName());
+                    copy('C:\wamp64\www\albumzAPI\web\upload\pictures\\' . $pictureUpload->getName(),'C:\wamp64\www\albumzAPI\var\public\upload\pictures\\' . $pictureUpload->getName());
 
                     $formatted = [];
                     $formatted[] = [
@@ -287,6 +288,57 @@ class PictureController extends Controller
 
     }
 
+
+
+
+    /**
+     * @Delete("/pictures/delete/{picture_id}")
+     */
+    public function deletePicture(Request $request)
+    {
+        $viewHandler = $this->get('fos_rest.view_handler');
+
+
+        $em = $this->getDoctrine()->getManager();
+        $picture = $em->getRepository(Picture::class)->find($request->get('picture_id'));
+
+        if(!$picture){
+            //error no pic found !
+            $formatted = [];
+            $formatted[] = [
+                "error" => true,
+                "message" => "Cannot delete a non existing picture !",
+                "code" => Response::HTTP_NOT_FOUND
+            ];
+            // Création d'une vue FOSRestBundle
+            $view = View::create($formatted);
+            $view->setFormat('json');
+            return $viewHandler->handle($view);
+        }else{
+
+            //delete file for web/upload (server)
+            //delete file for src/appbundle/public/... (client accessible)
+            unlink('C:\wamp64\www\albumzAPI\web\upload\pictures\\'.$picture->getName());
+            unlink('C:\wamp64\www\albumzAPI\var\public\upload\pictures\\'.$picture->getName());
+
+            $em->remove($picture);
+            $em->flush();
+
+
+
+            $formatted = [];
+            $formatted[] = [
+                "error" => false,
+                "message" => "Picture delete with success",
+                "code" => Response::HTTP_OK
+            ];
+            // Création d'une vue FOSRestBundle
+            $view = View::create($formatted);
+            $view->setFormat('json');
+            return $viewHandler->handle($view);
+        }
+
+    }
 
 
 

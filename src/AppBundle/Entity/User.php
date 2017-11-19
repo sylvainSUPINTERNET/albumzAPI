@@ -54,7 +54,7 @@ class User
     //TODO: One idUploader to Many Picture
     /**
      * One User has Many Picture.
-     * @ORM\OneToMany(targetEntity="Picture", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="Picture", mappedBy="user", cascade={"remove"}, orphanRemoval=true)
      */
     private $pictures;
 
