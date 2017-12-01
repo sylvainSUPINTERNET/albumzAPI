@@ -59,6 +59,13 @@ class User
     private $pictures;
 
 
+    /**
+     * One User has Many Albums.
+     * @ORM\OneToMany(targetEntity="Album", mappedBy="user")
+     */
+    private $albums;
+
+
 
 
     /**
@@ -207,5 +214,39 @@ class User
     public function getPictures()
     {
         return $this->pictures;
+    }
+
+    /**
+     * Add album
+     *
+     * @param \AppBundle\Entity\Albums $album
+     *
+     * @return User
+     */
+    public function addAlbum(\AppBundle\Entity\Albums $album)
+    {
+        $this->albums[] = $album;
+
+        return $this;
+    }
+
+    /**
+     * Remove album
+     *
+     * @param \AppBundle\Entity\Albums $album
+     */
+    public function removeAlbum(\AppBundle\Entity\Albums $album)
+    {
+        $this->albums->removeElement($album);
+    }
+
+    /**
+     * Get albums
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAlbums()
+    {
+        return $this->albums;
     }
 }

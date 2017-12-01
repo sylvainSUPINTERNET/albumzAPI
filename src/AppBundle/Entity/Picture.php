@@ -56,6 +56,13 @@ class Picture
      */
     private $user;
 
+
+    /**
+     * Many Pictures have Many Albums.
+     * @ORM\ManyToMany(targetEntity="Album", inversedBy="pictures")
+     */
+    private $albums;
+
     /**
      * Get id
      *
@@ -185,5 +192,46 @@ class Picture
     public function getUser()
     {
         return $this->user;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->albums = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add album
+     *
+     * @param \AppBundle\Entity\Album $album
+     *
+     * @return Picture
+     */
+    public function addAlbum(\AppBundle\Entity\Album $album)
+    {
+        $this->albums[] = $album;
+
+        return $this;
+    }
+
+    /**
+     * Remove album
+     *
+     * @param \AppBundle\Entity\Album $album
+     */
+    public function removeAlbum(\AppBundle\Entity\Album $album)
+    {
+        $this->albums->removeElement($album);
+    }
+
+    /**
+     * Get albums
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAlbums()
+    {
+        return $this->albums;
     }
 }

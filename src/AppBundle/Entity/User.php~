@@ -59,6 +59,13 @@ class User
     private $pictures;
 
 
+    /**
+     * One User has Many Albums.
+     * @ORM\OneToMany(targetEntity="Albums", mappedBy="user")
+     */
+    private $albums;
+
+
 
 
     /**

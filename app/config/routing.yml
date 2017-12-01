@@ -6,3 +6,11 @@ app:
 picture:
     type:     rest
     resource: AppBundle\Controller\PictureController
+
+
+album:
+    type:     rest
+    resource: AppBundle\Controller\AlbumController
+
+
+
