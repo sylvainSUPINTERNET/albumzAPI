@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="album")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AlbumRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Album
 {
@@ -44,7 +45,7 @@ class Album
 
     /**
      * Many Albums have Many Pictures.
-     * @ORM\ManyToMany(targetEntity="Picture", inversedBy="albums")
+     * @ORM\ManyToMany(targetEntity="Picture", inversedBy="albums", cascade={"remove"})
      * @ORM\JoinTable(name="albums_pictures")
      */
     private $pictures;
@@ -52,7 +53,7 @@ class Album
     /**
      * Many Albums have One User.
      * @ORM\ManyToOne(targetEntity="User", inversedBy="albums")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $user;
 
@@ -117,14 +118,13 @@ class Album
 
     /**
      * Set dateCreation
-     *
-     * @param \DateTime $dateCreation
-     *
+     * @ORM\PrePersist
      * @return Album
      */
-    public function setDateCreation($dateCreation)
+
+    public function setDateCreation()
     {
-        $this->dateCreation = $dateCreation;
+        $this->dateCreation = new \DateTime('now');
 
         return $this;
     }
@@ -179,5 +179,29 @@ class Album
     public function getPictures()
     {
         return $this->pictures;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Album
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

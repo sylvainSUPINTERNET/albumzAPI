@@ -61,7 +61,7 @@ class User
 
     /**
      * One User has Many Albums.
-     * @ORM\OneToMany(targetEntity="Album", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="Album", mappedBy="user", cascade={"remove"}, orphanRemoval=true)
      */
     private $albums;
 

@@ -55,13 +55,7 @@ class Picture
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $user;
-
-
-    /**
-     * Many Pictures have Many Albums.
-     * @ORM\ManyToMany(targetEntity="Album", inversedBy="pictures")
-     */
-    private $albums;
+    
 
     /**
      * Get id

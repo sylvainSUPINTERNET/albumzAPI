@@ -45,7 +45,7 @@ class Album
 
     /**
      * Many Albums have Many Pictures.
-     * @ORM\ManyToMany(targetEntity="Picture", inversedBy="albums")
+     * @ORM\ManyToMany(targetEntity="Picture", inversedBy="albums", cascade={"remove"})
      * @ORM\JoinTable(name="albums_pictures")
      */
     private $pictures;
@@ -53,7 +53,7 @@ class Album
     /**
      * Many Albums have One User.
      * @ORM\ManyToOne(targetEntity="User", inversedBy="albums")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $user;
 
