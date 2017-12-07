@@ -133,6 +133,7 @@ class PictureController extends Controller
                         "error" => false,
                         "message" => "Uploaded with success !",
                         "code" => Response::HTTP_OK,
+                        "picture_id" => $pictureUpload->getId()
                     ];
                     // Création d'une vue FOSRestBundle
                     $view = View::create($formatted);

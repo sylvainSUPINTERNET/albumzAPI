@@ -45,7 +45,7 @@ class Album
 
     /**
      * Many Albums have Many Pictures.
-     * @ORM\ManyToMany(targetEntity="Picture", inversedBy="albums", cascade={"remove"})
+     * @ORM\ManyToMany(targetEntity="Picture", inversedBy="albums")
      * @ORM\JoinTable(name="albums_pictures")
      */
     private $pictures;
