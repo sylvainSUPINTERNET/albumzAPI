@@ -17,6 +17,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new FOS\RestBundle\FOSRestBundle(),
             new Vich\UploaderBundle\VichUploaderBundle(),
+            new Skies\QRcodeBundle\SkiesQRcodeBundle(),
             new AppBundle\AppBundle(),
 
             //to do : callback lifecycle for date

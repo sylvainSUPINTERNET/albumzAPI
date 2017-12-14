@@ -342,6 +342,45 @@ class PictureController extends Controller
     }
 
 
+    /**
+     * @Get("/pictures/{namePicture_extension}/QRCode/display")
+     */
+    public function getPictureQRCode(Request $request)
+    {
+        $viewHandler = $this->get('fos_rest.view_handler');
+
+
+        $em = $this->getDoctrine()->getManager();
+        $picture = $em->getRepository(Picture::class)->findBy(array("name" => $request->get('namePicture_extension')));
+        if(!$picture){
+            $formatted = [];
+            $formatted[] = [
+                "error" => true,
+                "message" => "An error was occurred ! Please retry ...",
+                "code" => Response::HTTP_NOT_FOUND
+            ];
+            // Création d'une vue FOSRestBundle
+            $view = View::create($formatted);
+            $view->setFormat('json');
+            return $viewHandler->handle($view);
+
+        }else{
+            $options = array(
+                'code'   => 'string to encode',
+                'type'   => 'qrcode',
+                'format' => 'png',
+                'width'  => 10,
+                'height' => 10,
+                'color'  => array(127, 127, 127),
+            );
+
+            $barcode =
+                $this->get('skies_barcode.generator')->generate($options);
+
+            return new Response('<img src="data:image/png;base64,'.$barcode.'" />');
+        }
+
+    }
 
 
     //utils
