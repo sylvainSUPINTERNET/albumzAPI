@@ -369,8 +369,8 @@ class PictureController extends Controller
                 'code'   => 'string to encode',
                 'type'   => 'qrcode',
                 'format' => 'png',
-                'width'  => 10,
-                'height' => 10,
+                'width'  => 40,
+                'height' => 40,
                 'color'  => array(127, 127, 127),
             );
 
