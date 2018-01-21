@@ -29,7 +29,8 @@ class UserController extends Controller
      * @Post("/user/register")
      */
 
-    public function postUserRegisterAction(Request $request){
+    public function postUserRegisterAction(Request $request)
+    {
 
         $viewHandler = $this->get('fos_rest.view_handler');
 
@@ -38,7 +39,7 @@ class UserController extends Controller
         $user_firstname = $request->request->get('user_firstname');
         $user_lastname = $request->request->get('user_lastname');
 
-        if($user_email && $user_password && $user_firstname && $user_lastname){
+        if ($user_email && $user_password && $user_firstname && $user_lastname) {
 
             //Verif user dosnt exist
             $repository = $this->getDoctrine()->getRepository(User::class);
@@ -50,7 +51,7 @@ class UserController extends Controller
                 'password' => (hash('sha256', $user_password))
             ));
 
-            if($userExist != null){
+            if ($userExist != null) {
                 $formatted = [];
                 $formatted[] = [
                     "error" => true,
@@ -62,7 +63,7 @@ class UserController extends Controller
                 $view->setFormat('json');
                 return $viewHandler->handle($view);
 
-            }else{
+            } else {
                 $user = new User();
                 $em = $this->getDoctrine()->getManager();
                 $user->setFirstname($user_firstname);
@@ -89,7 +90,7 @@ class UserController extends Controller
                 return $viewHandler->handle($view);
             }
 
-        }else{
+        } else {
             $formatted = [];
             $formatted[] = [
                 "error" => true,
@@ -109,7 +110,8 @@ class UserController extends Controller
      * @Post("/user/login")
      */
 
-    public function postUserLoginAction(Request $request){
+    public function postUserLoginAction(Request $request)
+    {
         $viewHandler = $this->get('fos_rest.view_handler');
 
         $user_email = $request->request->get('user_email');
@@ -118,7 +120,7 @@ class UserController extends Controller
         $user_lastname = $request->request->get('user_lastname');
 
 
-        if($user_email && $user_password && $user_firstname && $user_lastname) {
+        if ($user_email && $user_password && $user_firstname && $user_lastname) {
 
             //Verif user dosnt exist
             $repository = $this->getDoctrine()->getRepository(User::class);
@@ -161,9 +163,50 @@ class UserController extends Controller
             }
         }
 
+    }
+
+
+    /**
+     * @Get("/user/get/{user_token}")
+     */
+    public function getUserByToken(Request $request)
+    {
+        $viewHandler = $this->get('fos_rest.view_handler');
+
+
+        $user_token = $request->get('user_token');
+        $user_id = filter_var($user_token, FILTER_SANITIZE_NUMBER_INT);
+
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(User::class)->find($user_id);
+        if (!$user) {
+            $formatted = [];
+            $formatted[] = [
+                "error" => true,
+                "message" => "user not found for this token ! Invalid token ",
+                "code" => Response::HTTP_NOT_FOUND
+            ];
+            // Création d'une vue FOSRestBundle
+            $view = View::create($formatted);
+            $view->setFormat('json');
+            return $viewHandler->handle($view);
+
+        } else {
+            $formatted = [];
+            $formatted[] = [
+                "error" => false,
+                "message" => "User found with success !",
+                "firstname" => $user->getFirstname(),
+                "lastname" => $user->getLastname(),
+                "email" => $user->getEmail(),
+            ];
+            // Création d'une vue FOSRestBundle
+            $view = View::create($formatted);
+            $view->setFormat('json');
+            return $viewHandler->handle($view);
         }
 
-
+    }
 
 
 }

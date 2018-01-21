@@ -342,6 +342,7 @@ class PictureController extends Controller
     }
 
 
+
     /**
      * @Get("/pictures/{namePicture_extension}/QRCode/display")
      */

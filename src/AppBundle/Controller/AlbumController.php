@@ -299,7 +299,6 @@ class AlbumController extends Controller
         $viewHandler = $this->get('fos_rest.view_handler');
         $album_id = $request->request->get('album_id');
 
-
         if ($album_id) {
             $em = $this->getDoctrine()->getManager();
             $album = $em->getRepository(Album::class)->find($album_id);
