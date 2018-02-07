@@ -79,12 +79,14 @@ class PictureController extends Controller
 
         $pictureFile = $request->files->get('picture_upload');
         $user_token= $request->request->get('picture_user_token');
+        $pictureLabel = $request->request->get('picture_label');
+        $pictureCategorie = $request->request->get('picture_category');
 
 
         $viewHandler = $this->get('fos_rest.view_handler');
 
 
-        if($pictureFile){
+        if($pictureFile && strlen($pictureLabel) > 0 && strlen($pictureLabel) > 0){
             if ($pictureFile->getMimeType() === "image/png" || $pictureFile->getMimeType() === "image/jpg" || $pictureFile->getMimeType() === "image/jpeg") {
                 //check size
                 $mimeType = $pictureFile->getMimeType();
@@ -120,6 +122,8 @@ class PictureController extends Controller
                     $em = $this->getDoctrine()->getManager();
                     $pictureUpload->setPictureFile($pictureFile);
                     $pictureUpload->setUser($user);
+                    $pictureUpload->setLabel($pictureLabel);
+                    $pictureUpload->setCategorie($pictureCategorie);
                     $em->persist($pictureUpload);
                     $em->flush();
 
@@ -172,7 +176,7 @@ class PictureController extends Controller
             $formatted = [];
             $formatted[] = [
                 "error" => true,
-                "message" => "No picture to upload",
+                "message" => "Cannot upload your picture, please check your fields ",
                 "code" => Response::HTTP_NO_CONTENT
             ];
             // Création d'une vue FOSRestBundle
@@ -216,6 +220,8 @@ class PictureController extends Controller
                     $formatted[] = [
                         'id' => $picture->getId(),
                         'name' => $picture->getName(),
+                        'label' => $picture->getLabel(),
+                        'category' => $picture->getCategorie(),
                         'date_publication' => $picture->getDatePublication(),
                     ];
                 }

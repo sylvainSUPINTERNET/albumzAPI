@@ -34,6 +34,20 @@ class Picture
     private $name;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="label", type="string", length=255)
+     */
+    private $label;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="categorie", type="string", length=255)
+     */
+    private $categorie;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="date_publication", type="datetime")

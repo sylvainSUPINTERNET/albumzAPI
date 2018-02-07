@@ -311,6 +311,8 @@ class AlbumController extends Controller
                         'picture_id' => $picture->getId(),
                         'picture_name' => $picture->getName(),
                         'date_publication' => $picture->getDatePublication(),
+                        'label'=>$picture->getLabel(),
+                        'category' => $picture->getCategorie(),
                     ];
                 }
                 // Création d'une vue FOSRestBundle

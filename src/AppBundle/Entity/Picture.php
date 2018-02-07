@@ -34,6 +34,20 @@ class Picture
     private $name;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="label", type="string", length=255, nullable=true)
+     */
+    private $label;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="categorie", type="string", length=255, nullable=true)
+     */
+    private $categorie;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="date_publication", type="datetime")
@@ -227,5 +241,53 @@ class Picture
     public function getAlbums()
     {
         return $this->albums;
+    }
+
+    /**
+     * Set label
+     *
+     * @param string $label
+     *
+     * @return Picture
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * Get label
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * Set categorie
+     *
+     * @param string $categorie
+     *
+     * @return Picture
+     */
+    public function setCategorie($categorie)
+    {
+        $this->categorie = $categorie;
+
+        return $this;
+    }
+
+    /**
+     * Get categorie
+     *
+     * @return string
+     */
+    public function getCategorie()
+    {
+        return $this->categorie;
     }
 }

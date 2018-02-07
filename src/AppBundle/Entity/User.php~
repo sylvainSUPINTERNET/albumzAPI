@@ -223,7 +223,7 @@ class User
      *
      * @return User
      */
-    public function addAlbum(\AppBundle\Entity\Albums $album)
+    public function addAlbum(\AppBundle\Entity\Album $album)
     {
         $this->albums[] = $album;
 
@@ -235,7 +235,7 @@ class User
      *
      * @param \AppBundle\Entity\Albums $album
      */
-    public function removeAlbum(\AppBundle\Entity\Albums $album)
+    public function removeAlbum(\AppBundle\Entity\Album $album)
     {
         $this->albums->removeElement($album);
     }
