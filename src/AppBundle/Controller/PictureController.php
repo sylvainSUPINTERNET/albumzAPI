@@ -390,6 +390,71 @@ class PictureController extends Controller
     }
 
 
+    //Search
+    /**
+     * @Post("/pictures/search/")
+     */
+    function searchPictureAction(Request $request){
+
+        $em = $this->getDoctrine()->getManager();
+
+        $viewHandler = $this->get('fos_rest.view_handler');
+
+        $search_value = $request->request->get('searchValue');
+
+        if($search_value !== ""){
+            $result = $em->getRepository("AppBundle\Entity\Picture")->createQueryBuilder('p')
+                ->where('p.label LIKE :search_value')
+                 ->setParameter('search_value', $search_value.'%')
+
+                ->getQuery()
+                ->getResult();
+
+
+            $formatted = [];
+            foreach ($result as $picture) {
+                $formatted[] = [
+                    'id' => $picture->getId(),
+                    'name' => $picture->getName(),
+                    'label' => $picture->getLabel(),
+                    'category' => $picture->getCategorie(),
+                    'date_publication' => $picture->getDatePublication(),
+                ];
+            }
+            if(sizeof($formatted) === 0){
+                $formatted[] = [
+                    "error" => true,
+                    "message" => "Aucun résultat pour la recherche " . $search_value,
+                    "code" => Response::HTTP_OK
+                ];
+                $view = View::create($formatted);
+                $view->setFormat('json');
+                return $viewHandler->handle($view);
+            }
+            $view = View::create($formatted);
+            $view->setFormat('json');
+            return $viewHandler->handle($view);
+
+        }else{
+
+            $formatted = [];
+            $formatted[] = [
+                "error" => true,
+                "message" => "Entrer une valeur pour commencer votre recherche",
+                "code" => Response::HTTP_OK
+            ];
+            // Création d'une vue FOSRestBundle
+            $view = View::create($formatted);
+            $view->setFormat('json');
+            return $viewHandler->handle($view);
+        }
+
+
+    }
+
+
+
+
     //utils
     function generateRandomString($length = 10) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
