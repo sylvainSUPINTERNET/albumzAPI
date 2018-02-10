@@ -392,7 +392,7 @@ class PictureController extends Controller
 
     //Search
     /**
-     * @Post("/pictures/search/")
+     * @Post("/pictures/search")
      */
     function searchPictureAction(Request $request){
 
@@ -411,6 +411,8 @@ class PictureController extends Controller
                 ->getResult();
 
 
+
+
             $formatted = [];
             foreach ($result as $picture) {
                 $formatted[] = [
@@ -419,8 +421,11 @@ class PictureController extends Controller
                     'label' => $picture->getLabel(),
                     'category' => $picture->getCategorie(),
                     'date_publication' => $picture->getDatePublication(),
+                    'nb_results_total' => sizeof($result) //return size of ALL results for show number of result in search
                 ];
             }
+
+
             if(sizeof($formatted) === 0){
                 $formatted[] = [
                     "error" => true,
@@ -431,6 +436,7 @@ class PictureController extends Controller
                 $view->setFormat('json');
                 return $viewHandler->handle($view);
             }
+
             $view = View::create($formatted);
             $view->setFormat('json');
             return $viewHandler->handle($view);
